@@ -111,7 +111,7 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           context: ./byoh
-          file: Dockerfile
+          file: ./byoh/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
