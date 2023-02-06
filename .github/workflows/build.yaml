@@ -61,10 +61,10 @@ jobs:
           FORCE_COLOR: 3
         run: |
           npx zx <<'EOF'
-          const { cloneBYOH, getVersion } = require('./.github/workflows/build-byoh.js')
+          const { cloneBYOH, getVersion } = require('./.github/workflows/build-byoh.js');
           (async () => {
             await cloneBYOH("./byoh", getVersion())
-          }).then(result => {
+          })().then(result => {
             console.log(result)
           }).catch(err => {
             throw err

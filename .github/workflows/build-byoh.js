@@ -15,7 +15,7 @@ exports.buildArtifacts = async () => {
 
     const byohDir = `./byoh`;
 
-    exports.cloneBYOH(byohDir, byohVersion);
+    await exports.cloneBYOH(byohDir, byohVersion);
 
     await $`cd ${byohDir} && IMG="ghcr.io/miscord-win/cluster-api-byoh-controller:${byohVersion}" make build-release-artifacts`
 
