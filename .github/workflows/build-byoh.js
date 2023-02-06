@@ -17,7 +17,6 @@ exports.buildArtifacts = async () => {
 
     exports.cloneBYOH(byohDir, byohVersion);
 
-    await $`cp metadata.yaml ./${byohDir}/metadata.yaml`
     await $`cd ${byohDir} && IMG="ghcr.io/miscord-win/cluster-api-byoh-controller:${byohVersion}" make build-release-artifacts`
 
     await $`cat << EOF >> ./${byohDir}/Makefile
