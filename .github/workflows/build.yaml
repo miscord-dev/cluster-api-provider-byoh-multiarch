@@ -10,9 +10,6 @@ on:
 
 jobs:
   artifacts:
-    strategy:
-      matrix:
-        arch: [amd64, arm64]
     runs-on: ubuntu-latest
     steps:
       -
@@ -23,7 +20,7 @@ jobs:
           FORCE_COLOR: 3
         run: |
           npx zx <<'EOF'
-          const script = require('./.github/workflows/build-byoh.js')
+          const script = require('./.github/workflows/build-byoh.js').buildArtifacts
           script().then(result => {
             console.log(result)
           }).catch(err => {
@@ -56,9 +53,20 @@ jobs:
         arch: [amd64, arm64]
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
+      - name: Build
+        env:
+          FORCE_COLOR: 3
+        run: |
+          npx zx <<'EOF'
+          const { cloneBYOH, getVersion } = require('./.github/workflows/build-byoh.js').buildArtifacts
+          (async () => {
+            await cloneBYOH("./byoh", getVersion())
+          }).then(result => {
+            console.log(result)
+          }).catch(err => {
+            throw err
+          })
+          EOF
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -99,7 +107,7 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v3
         with:
-          context: .
+          context: ./byoh
           file: Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}

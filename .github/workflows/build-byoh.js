@@ -1,11 +1,21 @@
-module.exports = async () => {
+exports.getVersion = () => {
     const byohVersion = 
-        `${process.env.GITHUB_REF}`.match(/(v\d+\.\d+\.\d+)/)[0] ?? 
+        (`${process.env.GITHUB_REF}`.match(/(v\d+\.\d+\.\d+)/) ?? [])[0] ?? 
         "v0.3.1";
+
+    return byohVersion;
+}
+
+exports.cloneBYOH = async (dir, version) => {
+    await $`git clone https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost.git -b ${version} --depth=1 ${dir}`
+}
+
+exports.buildArtifacts = async () => {
+    const byohVersion = exports.getVersion();
 
     const byohDir = `./byoh`;
 
-    await $`git clone https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost.git -b ${byohVersion} --depth=1 ${byohDir}`
+    exports.cloneBYOH(byohDir, byohVersion);
 
     await $`cp metadata.yaml ./${byohDir}/metadata.yaml`
     await $`cd ${byohDir} && IMG="ghcr.io/miscord-win/cluster-api-byoh-controller:${byohVersion}" make build-release-artifacts`
