@@ -8,6 +8,7 @@ exports.getVersion = () => {
 
 exports.cloneBYOH = async (dir, version) => {
     await $`git clone https://github.com/vmware-tanzu/cluster-api-provider-bringyourownhost.git -b ${version} --depth=1 ${dir}`
+    await $`mv Dockerfile byoh/`
 }
 
 exports.buildArtifacts = async () => {
